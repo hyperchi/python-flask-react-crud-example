@@ -8,21 +8,11 @@ import { withAuth } from '@okta/okta-react';
 
 import GithubRepo from "../GithubRepo"
 import SearchBar from "../SearchBar"
+import styles from "./style"
 
 import githubClient from '../githubClient'
 import APIClient from '../apiClient'
 
-const styles = theme => ({
-  root: {
-    flexGrow: 1,
-    marginTop: 30
-  },
-  paper: {
-    padding: theme.spacing.unit * 2,
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-  },
-});
 
 class Home extends React.Component {
   state = {
@@ -34,9 +24,9 @@ class Home extends React.Component {
   async componentDidMount() {
     const accessToken = await this.props.auth.getAccessToken()
     this.apiClient = new APIClient(accessToken);
-    this.apiClient.getKudos().then((data) => 
-      this.setState({...this.state, kudos: data})
-    ); 
+    this.apiClient.getKudos().then((data) =>
+        this.setState({...this.state, kudos: data})
+    );
   }
 
   handleTabChange = (event, value) => {
@@ -50,7 +40,6 @@ class Home extends React.Component {
   resetRepos = repos => this.setState({ ...this.state, repos })
 
   isKudo = repo => this.state.kudos.find(r => r.id == repo.id)
-  
   onKudo = (repo) => {
     this.updateBackend(repo);
   }
@@ -63,6 +52,7 @@ class Home extends React.Component {
     }
     this.updateState(repo);
   }
+
   updateState = (repo) => {
     if (this.isKudo(repo)) {
       this.setState({
@@ -83,53 +73,52 @@ class Home extends React.Component {
     if (event.which !== 13) { return }
 
     githubClient
-      .getJSONRepos(target.value)
-      .then((response) => {
-        target.blur();
-        this.setState({ ...this.state, value: 1 });
-        this.resetRepos(response.items);
-      })
+        .getJSONRepos(target.value)
+        .then((response) => {
+          target.blur();
+          this.setState({ ...this.state, value: 1 });
+          this.resetRepos(response.items);
+        })
   }
-  
   renderRepos = (repos) => {
     if (!repos) { return [] }
     return repos.map((repo) => {
       return (
-        <Grid item xs={12} md={3} key={repo.id}>
-          <GithubRepo onKudo={this.onKudo} isKudo={this.isKudo(repo)} repo={repo} />
-        </Grid>
+          <Grid item xs={12} md={3} key={repo.id}>
+            <GithubRepo onKudo={this.onKudo} isKudo={this.isKudo(repo)} repo={repo} />
+          </Grid>
       );
     })
   }
 
   render() {
     return (
-      <div className={styles.root}>
-        <SearchBar auth={this.props.auth} onSearch={this.onSearch} />
-         <Tabs
-          value={this.state.value}
-          onChange={this.handleTabChange}
-          indicatorColor="primary"
-          textColor="primary"
-          fullWidth
-        >
-          <Tab label="Kudos" />
-          <Tab label="Search" />
-        </Tabs>
-        
-        <SwipeableViews
-          axis={'x-reverse'}
-          index={this.state.value}
-          onChangeIndex={this.handleTabChangeIndex}
-        >
-          <Grid container spacing={16} style={{padding: '20px 0'}}>
-            { this.renderRepos(this.state.kudos) }
-          </Grid>
-          <Grid container spacing={16} style={{padding: '20px 0'}}>
-            { this.renderRepos(this.state.repos) }
-          </Grid>
-        </SwipeableViews>
-      </div>
+        <div className={styles.root}>
+          <SearchBar auth={this.props.auth} onSearch={this.onSearch} />
+          <Tabs
+              value={this.state.value}
+              onChange={this.handleTabChange}
+              indicatorColor="primary"
+              textColor="primary"
+              fullWidth
+          >
+            <Tab label="Saved" />
+            <Tab label="Search" />
+          </Tabs>
+
+          <SwipeableViews
+              axis={'x-reverse'}
+              index={this.state.value}
+              onChangeIndex={this.handleTabChangeIndex}
+          >
+            <Grid container spacing={16} style={{padding: '20px 0'}}>
+              { this.renderRepos(this.state.kudos) }
+            </Grid>
+            <Grid container spacing={16} style={{padding: '20px 0'}}>
+              { this.renderRepos(this.state.repos) }
+            </Grid>
+          </SwipeableViews>
+        </div>
     );
   }
 }
