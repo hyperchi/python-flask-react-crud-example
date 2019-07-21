@@ -33,7 +33,7 @@ class SearchBar extends React.Component {
                                 <SearchIcon />
                             </div>
                             <InputBase
-                                placeholder="search whatever"
+                                placeholder="Search Whatever..."
                                 onKeyPress={this.props.onSearch}
                                 classes={{
                                     root: classes.inputRoot,
@@ -41,6 +41,13 @@ class SearchBar extends React.Component {
                                 }}
                             />
                         </div>
+
+                        <div className={classes.grow} />
+                        <Button onClick={this.props.onSearch} classes={{
+                            root: classes.inputRoot,
+                            input: classes.inputInput,
+                        }} color="inherit">Search</Button>
+
                         <div className={classes.grow} />
                         <Button onClick={this.logout} color="inherit">Logout</Button>
                     </Toolbar>

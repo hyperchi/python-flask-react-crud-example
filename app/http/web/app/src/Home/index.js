@@ -104,6 +104,11 @@ class Home extends React.Component {
           >
             <Tab label="Saved" />
             <Tab label="Search" />
+            <Tab label="Application Home" />
+            <Tab label="Acquisition" />
+            <Tab label="Activation" />
+            <Tab label="Monietization" />
+
           </Tabs>
 
           <SwipeableViews
